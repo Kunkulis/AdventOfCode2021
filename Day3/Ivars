@@ -1,0 +1,14 @@
+[11:33] Āriņš, Ivars
+            var oxyList = new List<string>(input);            var co2List = new List<string>(input);            for (int i = 0; i < input[0].Length; i++)            {                if (oxyList.Count > 1)                {                    var counts = CountBits(oxyList, i);                    var filter = counts[1] >= counts[0] ? '1' : '0';                    oxyList = oxyList.Where(x => x[i] == filter).ToList();                }                if (co2List.Count > 1)                {                    var counts = CountBits(co2List, i);                    var filter = counts[0] <= counts[1] ? '0' : '1';                    oxyList = oxyList.Where(x => x[i] == filter).ToList();                }            }
+
+[11:33] Āriņš, Ivars
+        public static Dictionary<int, int> CountBits(List<string> input, int position) =>            input                .Select(x => x[position])                .GroupBy(x => x)                .ToDictionary(g => Convert.ToInt32(g.Key), g => g.Count());
+
+
+
+[11:49] Āriņš, Ivars
+Ja gribās pavisam izvirst            for (int i = 0; i < input[0].Length; i++)            {                oxyList = ReduceList(oxyList, i, counts => counts[1] >= counts[0] ? '1' : '0');                co2List = ReduceList(co2List, i, counts => counts[0] <= counts[1] ? '0' : '1');            }
+
+[11:49] Āriņš, Ivars
+        public static List<string> ReduceList(List<string> input, int position, Func<Dictionary<int, int>, char> filterFactory)         {            if (input.Count <= 1)            {                return input;            }                        var counts = CountBits(input, position);            return input.Where(x => x[position] == filterFactory(counts)).ToList();        }
+
