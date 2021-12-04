@@ -27,20 +27,35 @@ for (int i = 0; i < boardsRaw.Count(); i++)
 }
 boards.Add(board);
 
-foreach (var num in draw)
+foreach (var luckyBoard in boards)
 {
-    for (int i = 0; i < boards.Count; i++)
-    {
-        var aBoard = boards[i];
-        for (int j = 0; j < aBoard.Length; j++)
-        {
-            var luckyNum = aBoard[i,j];
-            if(luckyNum == num)
-            {
+    FindWinner(luckyBoard, draw);
+}
 
+void FindWinner(int[,] luckyBoard, int[] draw)
+{
+    string[,] vs = new string[5, 5];
+    for (int row = 0; row < 5; row++)
+    {
+        for (int col = 0; col < 5; col++)
+        {
+            var val = luckyBoard[row, col];
+            foreach (var num in draw)
+            {
+                if (num==val)
+                {
+                    vs[row, col] = "X";
+                }
             }
+
         }
     }
+
+    foreach (var item in vs)
+    {
+        //check if won
+    }
+
 }
 
 //foreach (var num in draw)
