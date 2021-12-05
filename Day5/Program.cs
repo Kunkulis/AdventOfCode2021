@@ -35,37 +35,18 @@ foreach (var row in inputRaw)
     //diagonal
     else
     {
-        var xDir = x1 > x2 ? "decrease" : "increase";
-        var yDir = y1 > y2 ? "decrease" : "increase";
-        var currX = x1;
-        var currY = y1;
+        var xDir = x1 > x2 ? -1 : +1;
+        var yDir = y1 > y2 ? -1 : +1;
 
-        var loops = Math.Abs(x1 - x2)+1;
-        var i = 0;
+        var loops = Math.Abs(x1 - x2)+1;        
 
-        while (loops!=i)
+        for (int i = 0; i < loops; i++)        
         {
-            result[currX, currY] += 1;
-            if (xDir == "decrease")
-            { 
-                currX--; 
-            }
-            else 
-            { 
-                currX++; 
-            }
-            if (yDir == "decrease")
-            {
-                currY--;
-            }
-            else
-            {
-                currY++;
-            }
-            i++;
+            result[x1, y1] += 1;
 
+            x1 += xDir;
+            y1 += yDir; 
         }
-
     }
 }
 

@@ -31,36 +31,77 @@ for (int i = 4; i < draw.Length; i++)
 {
     FindWinner(boards, draw[0..i]);
 }
+Console.ReadKey();
 
 void FindWinner(List<int[,]> boards, int[] draw)
 {
     //take each draw and loop through boards
-
-    foreach (var item in collection)
+    for (int i = 1; i < boards.Count; i++)
     {
-        //check if won
-    }
+        var board = boards[^i];
+        //check coluns
+        for (int x = 0; x < 5; x++)
+        {
+            var count = 0;
+            for (int y = 0; y < 5; y++)
+            {
+                for (int d = 0; d < draw.Length; d++)
+                {
+                    if (board[x, y] == draw[d])
+                    {
+                        count++;
+                        if (count == 5)
+                        {
+                            Winner(board, draw);
+                        }
+                    }
+                }
+            }
+        }
 
+        //check rows
+        for (int y = 0; y < 5; y++)
+        {
+            var count = 0;
+            for (int x = 0; x < 5; x++)
+            {
+                for (int d = 0; d < draw.Length; d++)
+                {
+                    if (board[x, y] == draw[d])
+                    {
+                        count++;
+                        if (count == 5)
+                        {
+                            Winner(board, draw);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-//foreach (var num in draw)
-//{
-//    for (int i = 0; i < boards.Count; i++)
-//    {
-//        for (int n = 0; n < boards[i].Count; n++)
-//        {
-//            //if (num == boards[i][n])
-//            //{                
-//            //    //bingo.Insert(i, new BingoItem(n,num)); //cenšos uztaisīt Listu, kur lieku iekšā nosauktos ciparus ar to indexu. Vajadzētu atrast no kuras bingo kartes viņš ir paņemts, tad tajā arī ielikt
-//            //}
-//        }
-//    }
-//    //var items = boards.SelectMany(br=>br).Where(b=>b == num).ToList();
+void Winner(int[,] board, int[] draw)
+{
+    int sum = 0;
+    //clear board
+    for (int x = 0; x < 5; x++)
+    {
+        for (int y = 0; y < 5; y++)
+        {
+            for (int d = 0; d < draw.Length; d++)
+            {
+                if (board[x, y] == draw[d])
+                {
+                    board[x, y] = 0;
+                }
+            }
+        }
+    }
 
-//    foreach (var bing in bingo)
-//    {
-
-//    }
-//}
-
-Console.ReadKey();
+    foreach (var num in board)
+    {
+        sum += num;
+    }
+    Console.WriteLine(sum * draw[^1]);
+}
