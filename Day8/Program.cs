@@ -3,7 +3,6 @@ var inputRaw = File.ReadAllLines("input.txt")
     .Select(x => x.Split("|")).ToArray();
 //var inputList = inputRaw[0].Select(x => int.Parse(x)).ToList();
 var input = inputRaw.SelectMany(x => x).Select(y => y.Trim().Split()).ToList();
-var count = 0;
 
 var allNumbers = new List<int>();
 
@@ -182,10 +181,3 @@ string FindOne(HashSet<string> check)
     }
     return string.Empty;
 }
-
-foreach (var item in input)
-{
-    var result = item.Count(x => x.Length == 2 || x.Length == 4 || x.Length == 7 || x.Length == 3);
-    count += result;
-}
-
