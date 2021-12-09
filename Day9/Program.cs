@@ -20,7 +20,6 @@ var pointsArount = new List<int>();
 var result = new List<int>();
 var floodSize = new HashSet<(int,int)>();
 var floodList = new List<int>();
-var floodCount = 0;
 
 //find low points
 for (int i = 0; i < xSize; i++)
@@ -42,7 +41,7 @@ for (int i = 0; i < xSize; i++)
         {
             floodSize = new HashSet<(int,int)>();
             result.Add(point + 1);
-            floodFill(i, j, point, floodCount);
+            floodFill(i, j, point);
             floodList.Add(floodSize.Count());            
         }
         pointsArount.Clear();
@@ -57,26 +56,26 @@ Console.WriteLine(largest*second*third);
 Console.WriteLine(result.Sum());
 Console.ReadLine();
 
-void floodFill(int x, int y, int point, int floodCount)
+void floodFill(int x, int y, int point)
 {
     // Base cases
     if (x < 0 || x >= input.GetLength(0) ||
         y < 0 || y >= input.GetLength(1))
         return;
 
-    if (input[x, y] == 9 || input[x, y] < point)
+    if (input[x, y] == 9)
         return ;
 
-    var currentPoint = input[x, y];    
+    var currentPoint = input[x, y];
     // Replace the color at (x, y)
+    if (floodSize.Contains((x, y))) 
+        return;    
     floodSize.Add((x,y));
 
     // Recur for north, east, south and west
-    floodFill(x, y - 1, currentPoint, floodCount);
-    floodFill(x + 1, y, currentPoint, floodCount);
-    floodFill(x - 1, y, currentPoint, floodCount);
-    floodFill(x, y + 1, currentPoint, floodCount);  
-    
-    return;
+    floodFill(x, y - 1, currentPoint);
+    floodFill(x + 1, y, currentPoint);
+    floodFill(x - 1, y, currentPoint);
+    floodFill(x, y + 1, currentPoint);    
 }
 
