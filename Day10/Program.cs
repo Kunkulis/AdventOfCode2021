@@ -1,8 +1,17 @@
 ﻿// See https://aka.ms/new-console-template for more information
 var input = File.ReadAllLines("input.txt");
-var points = 0;
+var points1 = 0;
 var incompleteList = new List<Int64>();
-for(int x =0; x<input.Length;x++)
+
+var points = new Dictionary<char, int>()
+{
+    ['('] = 1,
+    ['['] = 2,
+    ['{'] = 3,
+    ['<'] = 4,
+};
+
+for (int x =0; x<input.Length;x++)
 {
     var loops = 0;
     while (loops <1)
@@ -22,10 +31,10 @@ for(int x =0; x<input.Length;x++)
 
     if (itemDictionary.ContainsKey((char)41)|| itemDictionary.ContainsKey((char)62) || itemDictionary.ContainsKey((char)93) || itemDictionary.ContainsKey((char)125))
     {
-        var startPoints = points;
+        var startPoints = points1;
         for (int i = 0; i < input[x].Length; i++)
         {
-            points += input[x][i] switch
+            points1 += input[x][i] switch
             {
                 (char)41 => 3,
                 (char)62 => 25137,
@@ -33,11 +42,14 @@ for(int x =0; x<input.Length;x++)
                 (char)125 => 1197,
                 _ => 0,
             };
-            if (points != startPoints) break;
+            if (points1 != startPoints) break;
         }
     }
     else
     {
+        //var test = input[x].Aggregate()
+        
+        var result = input[x].Aggregate((0, x) => acc * 5 + points[x], acc);
         Int64 points2 = 0;
         for (int i = input[x].Length-1; i >= 0; i--)
         {
@@ -67,6 +79,6 @@ for(int x =0; x<input.Length;x++)
 incompleteList.Sort();
 var mid = incompleteList[incompleteList.Count/2];
 
-Console.WriteLine(points);
+Console.WriteLine(points1);
 Console.WriteLine(mid);
 Console.ReadLine();
