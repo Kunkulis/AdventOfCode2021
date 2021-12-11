@@ -18,7 +18,7 @@ for (int i = 0; i < xSize; i++)
 
 var steps = 100;
 var loop = 0;
-while (flashesInStep!=100)
+while (flashesInStep != 100)
 {
     flashedInStep = new HashSet<(int, int)>();
     for (int x = 0; x < xSize; x++)
@@ -32,19 +32,16 @@ while (flashesInStep!=100)
     {
         for (int y = 0; y < ySize; y++)
         {
-            if (!flashedInStep.Contains((x, y)))
+            if (input[x, y] > 9 && !flashedInStep.Contains((x, y)))
             {
-                if (input[x, y] > 9)
-                {
-                    input[x, y] = 0;
-                    IncreaseEnergyAroung(x, y);
-                }
+                input[x, y] = 0;
+                IncreaseEnergyAroung(x, y);
             }
         }
     }
     loop++;
     totalFlashes += input.Cast<int>().Count(x => x == 0);
-    flashesInStep = input.Cast<int>().Count(x => x == 0);    
+    flashesInStep = input.Cast<int>().Count(x => x == 0);
 }
 
 Console.WriteLine(totalFlashes);
@@ -53,16 +50,12 @@ Console.ReadLine();
 
 void IncreaseEnergyAroung(int x, int y)
 {
-    // Base cases
     if (x < 0 || x >= input.GetLength(0) ||
         y < 0 || y >= input.GetLength(1))
         return;
 
-    var point = input[x, y];
-    if (flashedInStep.Contains((x, y)))
-    {
-        return;
-    }
+    if (flashedInStep.Contains((x, y))) return;
+
     else if (input[x, y] != 0 && (input[x, y] + 1) <= 9)
     {
         input[x, y] += 1;
@@ -77,7 +70,7 @@ void IncreaseEnergyAroung(int x, int y)
     IncreaseEnergyAroung(x - 1, y);
     IncreaseEnergyAroung(x, y + 1);
     IncreaseEnergyAroung(x, y - 1);
-    //Diognal
+    //Diagonal
     IncreaseEnergyAroung(x + 1, y - 1);
     IncreaseEnergyAroung(x + 1, y + 1);
     IncreaseEnergyAroung(x - 1, y - 1);
