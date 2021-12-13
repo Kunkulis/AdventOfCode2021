@@ -16,7 +16,7 @@ for (int i = 0; i < xSize; i++)
     }
 }
 
-var steps = 100;
+//var steps = 100;
 var loop = 0;
 while (flashesInStep != 100)
 {
