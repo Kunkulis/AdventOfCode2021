@@ -4,6 +4,8 @@ var maxX = 0;
 var maxY = 0;
 GetMaxCoordinate();
 var folds = new List<string>();
+var foldX = 0;
+var foldY = 0;
 
 string[,] input = new string[maxY, maxX];
 SetupGrid();
@@ -23,6 +25,7 @@ void DoFolds()
 
         if (axes == "y")
         {
+            foldY=line;
             for (int i = line + 1; i < maxY; i++)
             {
                 for (int j = 0; j < maxX; j++)
@@ -38,6 +41,7 @@ void DoFolds()
         }
         else
         {
+            foldX=line;
             for (int i = line + 1; i < maxX; i++)
             {
                 for (int j = 0; j < maxY; j++)
@@ -52,23 +56,19 @@ void DoFolds()
             }
         }
     }
-    ToCsv();
+    ToConsole();
 }
 
-void ToCsv()
-{
-    using (StreamWriter outfile = new StreamWriter(@"E:\output.csv"))
+void ToConsole()
+{   
+    for (int y = 0; y < foldY; y++)
     {
-        for (int x = 0; x < maxX; x++)
+        string content = "";
+        for (int x = 0; x < foldX; x++)
         {
-            string content = "";
-            for (int y = 0; y < maxY; y++)
-            {
-                content += input[y,x]?.ToString() + ";";
-            }
-            //trying to write data to csv
-            outfile.WriteLine(content);
+            content += input[y, x] == null ? " " : input[y, x].ToString();
         }
+        Console.WriteLine(content);
     }
 }
 
