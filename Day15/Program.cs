@@ -1,4 +1,4 @@
-﻿var inputRaw = File.ReadAllLines("test.txt");
+﻿var inputRaw = File.ReadAllLines("input.txt");
 var colSize = inputRaw[0].Count();
 var rowSize = inputRaw.Count();
 
@@ -23,13 +23,16 @@ for (int row = 0; row < rowSize; row++)
 var visited = new HashSet<(int, int)>();
 var pathPoints = new List<int>();
 var results = new List<int>();
-GetPath(0, 0);
+
+GetPath(0, 0, pathPoints, visited);
+Console.WriteLine(results.Min() - input[0, 0]);
 Console.ReadLine();
 
-void GetPath(int row, int col)
+void GetPath(int row, int col, List<int> pathPoints, HashSet<(int, int)> visited)
 {
-    if (visited.Contains((rowSize - 1, colSize - 1)))
+    if (row == rowSize - 1 & col == colSize - 1)
     {
+        pathPoints.Add(input[row, col]);
         results.Add(pathPoints.Sum());
         return;
     }
@@ -42,11 +45,19 @@ void GetPath(int row, int col)
         return;
 
     visited.Add((row, col));
-    pathPoints.Add(input[row, col]);
+    if (results.Count()<1)
+    {
+        pathPoints.Add(input[row, col]);
+    }
+    else if (results.Min() > pathPoints.Sum()+ input[row, col])
+    {
+        pathPoints.Add(input[row, col]);
+    }
+    else { return; }
 
     foreach (var item in parentRelations[(row, col)])
     {
-        GetPath(item.Item1, item.Item2);
+        GetPath(item.Item1, item.Item2, new List<int>(pathPoints), new HashSet<(int, int)>(visited));
     }
 
     //if (parentRelations[(row, col)].Contains((row - 1, col)))
@@ -72,13 +83,13 @@ IEnumerable<(int, int)> GetChildren(int row, int col)
     var childrenWithPoints = new List<(int, (int, int))>();
     var currentPoint = input[row, col];
     //up
-    if (row - 1 >= 0)
-    {
-        //if (input[row - 1, col] <= currentPoint)
-        //{
-        childrenWithPoints.Add((input[row - 1, col], (row - 1, col)));
-        //}
-    }
+    //if (row - 1 >= 0)
+    //{
+    //    //if (input[row - 1, col] <= currentPoint)
+    //    //{
+    //    childrenWithPoints.Add((input[row - 1, col], (row - 1, col)));
+    //    //}
+    //}
     //down
     if (row + 1 < input.GetLength(0))
     {
@@ -88,13 +99,13 @@ IEnumerable<(int, int)> GetChildren(int row, int col)
         //}
     }
     //left
-    if (col - 1 >= 0)
-    {
-        //if (input[row, col - 1] <= currentPoint)
-        //{
-        childrenWithPoints.Add((input[row, col - 1], (row, col - 1)));
-        //}
-    }
+    //if (col - 1 >= 0)
+    //{
+    //    //if (input[row, col - 1] <= currentPoint)
+    //    //{
+    //    childrenWithPoints.Add((input[row, col - 1], (row, col - 1)));
+    //    //}
+    //}
     //right
     if (col + 1 < input.GetLength(1))
     {
