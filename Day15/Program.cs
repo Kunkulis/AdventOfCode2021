@@ -1,34 +1,56 @@
-﻿var inputRaw = File.ReadAllLines("test.txt");
+﻿var inputRaw = File.ReadAllLines("input.txt");
+
+var colSize2 = inputRaw[0].Count() * 5;
+var rowSize2 = inputRaw.Count() * 5;
+
 var colSize = inputRaw[0].Count();
 var rowSize = inputRaw.Count();
 
-int[,] input = new int[rowSize, colSize];
-int[,] unvisited = new int[rowSize, colSize];
+int[,] input1 = new int[rowSize, colSize];
+int[,] input2 = new int[rowSize2, colSize2];
+int[,] unvisited1 = new int[rowSize, colSize];
+int[,] unvisited2 = new int[rowSize2, colSize2];
+
+for (int row = 0; row < rowSize2; row++)
+{
+    for (int col = 0; col < colSize2; col++)
+    {
+        unvisited2[row, col] = -1;
+    }
+}
 
 for (int row = 0; row < rowSize; row++)
 {
     for (int col = 0; col < colSize; col++)
     {
-        input[row, col] = int.Parse(inputRaw[row].ToCharArray()[col].ToString());
-        unvisited[row, col] = -1;
+        input1[row, col] = int.Parse(inputRaw[row].ToCharArray()[col].ToString());
+        input2[row, col] = int.Parse(inputRaw[row].ToCharArray()[col].ToString());
+        unvisited1[row, col] = -1;
     }
 }
-unvisited[0, 0] = 0;
-var parentRelations = new Dictionary<(int, int), List<(int, int)>>();
-for (int row = 0; row < rowSize; row++)
+
+for (int row = rowSize; row < rowSize2; row++)
 {
     for (int col = 0; col < colSize; col++)
     {
-        var children = new List<(int, int)>(GetChildren(row, col));
-        parentRelations.Add((row, col), children);
+        input2[row, col] = input2[row - rowSize, col] < 9 ? input2[row - rowSize, col] + 1 : 1;
     }
 }
 
-var visited = new HashSet<(int, int)>();
-var pathPoints = new List<int>();
-var results = new List<int>();
+for (int row = 0; row < rowSize2; row++)
+{
+    for (int col = colSize; col < colSize2; col++)
+    {
+        input2[row, col] = input2[row, (col - colSize)] < 9 ? input2[row, (col - colSize)] + 1 : 1;
+    }
+}
 
-GetPath(0, 0);
+//File.WriteAllLines(@"E:/data.csv", ToCsv(input2));
+
+unvisited1[0, 0] = 0;
+unvisited2[0, 0] = 0;
+
+unvisited2 = GetPath(0, 0, input2, unvisited2);
 //File.WriteAllLines(@"C:/CP/data.csv", ToCsv(unvisited));
 
 static IEnumerable<String> ToCsv<T>(T[,] data, string separator = ";")
@@ -39,10 +61,10 @@ static IEnumerable<String> ToCsv<T>(T[,] data, string separator = ";")
           .Select(j => data[i, j])); // simplest, we don't expect ',' and '"' in the items
 }
 
-Console.WriteLine(results.Min() - input[0, 0]);
+Console.WriteLine(unvisited2[rowSize2 - 1, colSize2 - 1]);
 Console.ReadLine();
 
-void GetPath(int row, int col)
+int[,] GetPath(int row, int col, int[,] input, int[,] unvisited)
 {
     var nextVal = new { y = 0, x = 0 };
     var IsCorner = false;
@@ -51,44 +73,39 @@ void GetPath(int row, int col)
         row = nextVal.y;
         col = nextVal.x;
 
-        if ((row == 99 & col == 99))// || (neighbour.Item1 == 99 & neighbour.Item2 == 99))
-        {
 
-        }
         if (row + 1 < input.GetLength(0))
         {
-            if (!(input[row + 1, col] == 0) && unvisited[row + 1, col] == -1 || unvisited[row + 1, col] > input[row + 1, col] + unvisited[row, col])
+            if (!(input[row + 1, col] == 0) && (unvisited[row + 1, col] == -1 || unvisited[row + 1, col] > (input[row + 1, col] + unvisited[row, col])))
             {
                 unvisited[row + 1, col] = input[row + 1, col] + unvisited[row, col];
             }
         }
+        if (row - 1 > 0)
+        {
+            if (!(input[row - 1, col] == 0) && (unvisited[row - 1, col] == -1 || unvisited[row - 1, col] > (input[row - 1, col] + unvisited[row, col])))
+            {
+                unvisited[row - 1, col] = input[row - 1, col] + unvisited[row, col];
+            }
+        }
         if (col + 1 < input.GetLength(1))
         {
-            if (!(input[row, col + 1] == 0) && unvisited[row, col + 1] == -1 || unvisited[row, col + 1] > input[row, col + 1] + unvisited[row, col])
+            if (!(input[row, col + 1] == 0) && (unvisited[row, col + 1] == -1 || unvisited[row, col + 1] > (input[row, col + 1] + unvisited[row, col])))
             {
                 unvisited[row, col + 1] = input[row, col + 1] + unvisited[row, col];
             }
         }
-
-        //foreach (var neighbour in parentRelations[(row, col)])
-        //{
-        //    if ((row == 99 & col == 99)||(neighbour.Item1==99&neighbour.Item2==99))
-        //    {
-
-        //    }
-        //    if (input[neighbour.Item1, neighbour.Item2] == 0)
-        //    {
-        //        continue;
-        //    }
-        //    if (unvisited[neighbour.Item1, neighbour.Item2] == -1 || unvisited[neighbour.Item1, neighbour.Item2] > input[neighbour.Item1, neighbour.Item2] + unvisited[row, col])
-        //    {
-        //        unvisited[neighbour.Item1, neighbour.Item2] = input[neighbour.Item1, neighbour.Item2] + unvisited[row, col];
-        //    }
-        //}
+        if (col - 1 > 0)
+        {
+            if (!(input[row, col - 1] == 0) && (unvisited[row, col - 1] == -1 || unvisited[row, col - 1] > (input[row, col - 1] + unvisited[row, col])))
+            {
+                unvisited[row, col - 1] = input[row, col - 1] + unvisited[row, col];
+            }
+        }
 
         input[row, col] = 0;
 
-        var preNextVal = Enumerable.Range(0, colSize).SelectMany(y => Enumerable.Range(0, rowSize).Select(x => new { y, x })).Where(p => input[p.y, p.x] > 0 & unvisited[p.y, p.x] > 0);
+        var preNextVal = Enumerable.Range(0, colSize2).SelectMany(y => Enumerable.Range(0, rowSize2).Select(x => new { y, x })).Where(p => input[p.y, p.x] > 0 & unvisited[p.y, p.x] > 0);
         List<(int, (int, int))> listNextVal = new List<(int, (int, int))>();
         foreach (var item in preNextVal)
         {
@@ -97,31 +114,20 @@ void GetPath(int row, int col)
         }
         listNextVal.Sort();
         //nextVal = preNextVal.OrderBy(p => unvisited[p.y, p.x]).FirstOrDefault();
-        nextVal = new { y=listNextVal[0].Item2.Item1, x=listNextVal[0].Item2.Item2};
-        if (row == 99 & col == 99)
+        if (listNextVal.Count > 0)
+        {
+            nextVal = new { y = listNextVal[0].Item2.Item1, x = listNextVal[0].Item2.Item2 };
+        }
+        else
+        {
+            IsCorner = true;
+        }
+
+        if (row == rowSize2 - 1 & col == colSize2 - 1)
         {
             IsCorner = true;
         }
 
     } while (!IsCorner);
-
-}
-
-
-IEnumerable<(int, int)> GetChildren(int row, int col)
-{
-    var children = new List<(int, int)>();
-
-    //down
-    if (row + 1 < input.GetLength(0))
-    {
-        children.Add((row + 1, col));
-    }
-
-    //right
-    if (col + 1 < input.GetLength(1))
-    {
-        children.Add((row, col + 1));
-    }
-    return children;
+    return unvisited2;
 }
