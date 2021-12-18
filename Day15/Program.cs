@@ -42,24 +42,15 @@ for (int row = 0; row < rowSize2; row++)
     for (int col = colSize; col < colSize2; col++)
     {
         input2[row, col] = input2[row, (col - colSize)] < 9 ? input2[row, (col - colSize)] + 1 : 1;
-    }
-}
+    }}
 
-//File.WriteAllLines(@"E:/data.csv", ToCsv(input2));
+
 
 unvisited1[0, 0] = 0;
 unvisited2[0, 0] = 0;
 
 unvisited2 = GetPath(0, 0, input2, unvisited2);
-//File.WriteAllLines(@"C:/CP/data.csv", ToCsv(unvisited));
 
-static IEnumerable<String> ToCsv<T>(T[,] data, string separator = ";")
-{
-    for (int i = 0; i < data.GetLength(0); ++i)
-        yield return string.Join(separator, Enumerable
-          .Range(0, data.GetLength(1))
-          .Select(j => data[i, j])); // simplest, we don't expect ',' and '"' in the items
-}
 
 Console.WriteLine(unvisited2[rowSize2 - 1, colSize2 - 1]);
 Console.ReadLine();
