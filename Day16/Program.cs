@@ -35,12 +35,28 @@ if (typeId == 4)
 }
 else
 {
+    //1 - then the next 11 bits are a number that represents the number of sub-packets immediately contained by this packet
+    //0 - then the next 15 bits are a number that represents the total length in bits of the sub-packets contained by this packet
     var lengTypeId = int.Parse(binarystring[6].ToString());
-    var binaryLenght = lengTypeId == 1 ? 11 : 15;
-    var packetSum = lengTypeId == 1 ? Convert.ToInt32(binarystring[7..18], 2) : Convert.ToInt32(binarystring[7..22], 2);
-    binarystring=binarystring.Remove(0, (7 + binaryLenght));
-    for (int i = 0; i < packetSum; i++)
+    if (lengTypeId == 1)
     {
+        var binaryLenght = 11;
+        var packetSum = Convert.ToInt32(binarystring[7..18], 2);
+        binarystring = binarystring.Remove(0, (7 + binaryLenght));
+        var subPackIds = new List<(int, int, int)>();
+        for (int i = 0; i < packetSum; i++)
+        {
+            var binary = binarystring.Substring(0, 11);
+            subPackIds.Add(SubPackIds(binary));
+            binarystring = binarystring.Remove(0, 11);
+        }
+    }
+    else
+    {
+        var binaryLenght = 15;
+        var subLenght = Convert.ToInt32(binarystring[7..22], 2);
+        binarystring = binarystring.Remove(0, (7 + binaryLenght));        
+
         
     }
 
@@ -48,3 +64,12 @@ else
 
 Console.WriteLine(Convert.ToInt32(packets, 2));
 Console.ReadLine();
+
+(int, int, int) SubPackIds(string binary)
+{
+    var ver = Convert.ToInt32(binarystring[0..3], 2);    
+    var typeId = Convert.ToInt32(binarystring[3..6], 2);
+    var val = Convert.ToInt32(binarystring[6..], 2);
+
+    return (ver, typeId, val);
+}
