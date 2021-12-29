@@ -1,5 +1,5 @@
-﻿var player1 = 10;
-var player2 = 9;
+﻿var player1 = 4; //4   10
+var player2 = 8; //8   9
 
 var dieNum = 1;
 
@@ -11,23 +11,14 @@ var move = 0;
 
 while (true)
 {
-    (move, dieNum) = ThreeThrows(dieNum);
-    throws+= 3;
-
-    var score = int.Parse((player1 + move).ToString().ToCharArray()[^1].ToString());
-    player1Score = score == 0 ? player1Score + 10 : player1Score + score;
-    player1 = score == 0 ? 10 : score;
+    (player1Score, player1) = MakeMove(player1Score, player1);
+    
     if (player1Score >= 1000)
     {
         Console.WriteLine(throws * player2Score);
         break;
     }
-    (move, dieNum) = ThreeThrows(dieNum);
-    throws+= 3;
-
-    score = int.Parse((player2 + move).ToString().ToCharArray()[^1].ToString());
-    player2Score = score == 0 ? player2Score + 10 : player2Score + score;
-    player2 = score == 0 ? 10 : score;
+    (player2Score, player2) = MakeMove(player2Score, player2);
 
     if (player2Score >= 1000)
     {
@@ -37,6 +28,19 @@ while (true)
 }
 
 Console.ReadLine();
+
+(int playerScore, int player) MakeMove(int playerScore, int player)
+{
+    (move, dieNum) = ThreeThrows(dieNum);
+    throws += 3;
+
+    var score = int.Parse((player + move).ToString().ToCharArray()[^1].ToString());
+    playerScore = score == 0 ? playerScore + 10 : playerScore + score;
+    player = score == 0 ? 10 : score;
+
+    return (playerScore, player);
+}
+
 
 (int, int) ThreeThrows(int dieNum)
 {
@@ -77,7 +81,7 @@ Console.ReadLine();
         else
         {
             dieNum = 1;
-            return ((sum + dieNum), (dieNum+1));
+            return ((sum + dieNum), (dieNum + 1));
         }
 
         return (sum, (dieNum + 2));
